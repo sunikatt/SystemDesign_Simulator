@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, Network } from 'lucide-react';
 import { RequirementsCard } from '@/features/challenge/RequirementsCard';
 import { ArchitectureCanvas } from '@/features/canvas/ArchitectureCanvas';
+import { AuthControls } from '@/features/auth/AuthControls';
 
 export default function UrlShortenerChallengePage() {
   return (
@@ -15,9 +16,12 @@ export default function UrlShortenerChallengePage() {
               <div className="text-xs text-slate-400">URL Shortener MVP Simulator</div>
             </div>
           </div>
-          <Link href="/" className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-3 py-2 text-sm text-slate-200 hover:bg-white/10">
-            <ArrowLeft className="h-4 w-4" /> Back to landing
-          </Link>
+          <div className="flex items-center gap-3">
+            <AuthControls />
+            <Link href="/" className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-3 py-2 text-sm text-slate-200 hover:bg-white/10">
+              <ArrowLeft className="h-4 w-4" /> Back to landing
+            </Link>
+          </div>
         </header>
 
         <RequirementsCard />

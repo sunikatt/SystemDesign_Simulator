@@ -1,11 +1,12 @@
 'use client';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { addEdge, Background, BackgroundVariant, Connection, Controls, Edge, MiniMap, Node, ReactFlow, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { Play, RotateCcw, Save, Sparkles, Trash2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { defaultConfigs, componentLabels } from '@/lib/components';
-import { simulateArchitecture } from '@/lib/simulation';
+import { simulateArchitecture, urlShortenerTraffic } from '@/lib/simulation';
 import { ArchitectureNodeData, ComponentConfig, ComponentType, SimulationResult } from '@/types/simulation';
 import { ArchitectureNode } from './ArchitectureNode';
 import { ComponentSidebar } from './ComponentSidebar';
@@ -15,6 +16,14 @@ import { ResultsPanel } from '../results/ResultsPanel';
 const STORAGE_KEY = 'systemdesign-lab-url-shortener-design';
 
 type ArchitectureFlowNode = Node<ArchitectureNodeData, 'architecture'>;
+
+type SavedProgress = {
+  status: string;
+  bestScore: number;
+  lastScore: number;
+  simulationRuns: number;
+  updatedAt: string;
+};
 
 const initialNodes: ArchitectureFlowNode[] = [
   { id: 'api-1', type: 'architecture', position: { x: 60, y: 40 }, data: { label: 'API Gateway', type: 'apiGateway', config: { ...defaultConfigs.apiGateway } } },
@@ -47,14 +56,44 @@ const suggestedEdges: Edge[] = [
 
 function CanvasInner() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
   const { screenToFlowPosition, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState<ArchitectureFlowNode>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [result, setResult] = useState<SimulationResult | undefined>();
   const [isRunning, setIsRunning] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('Sign in to save simulator progress.');
+  const [savedProgress, setSavedProgress] = useState<SavedProgress | undefined>();
+  const [traffic, setTraffic] = useState(urlShortenerTraffic);
 
   const nodeTypes = useMemo(() => ({ architecture: ArchitectureNode }), []);
   const selectedNode = nodes.find((node) => node.selected);
+
+  useEffect(() => {
+    if (!session?.user) {
+      setSavedProgress(undefined);
+      setSaveStatus('Sign in to save simulator progress.');
+      return;
+    }
+
+    let isMounted = true;
+    fetch('/api/progress/url-shortener')
+      .then((response) => response.ok ? response.json() : undefined)
+      .then((data) => {
+        if (!isMounted) return;
+        if (data?.progress) {
+          setSavedProgress(data.progress);
+          setSaveStatus(`Progress loaded. Best score ${data.progress.bestScore}%.`);
+        } else {
+          setSaveStatus('Logged in. Run a simulation to save progress.');
+        }
+      })
+      .catch(() => {
+        if (isMounted) setSaveStatus('Could not load saved progress yet.');
+      });
+
+    return () => { isMounted = false; };
+  }, [session]);
 
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge({ ...params, animated: Boolean(result), style: { stroke: '#38bdf8' } }, eds));
@@ -88,10 +127,39 @@ function CanvasInner() {
     setEdges((current) => current.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
   }
 
+  async function syncProgress(simulation: SimulationResult) {
+    if (!session?.user) {
+      setSaveStatus('Simulation complete. Login with Google or GitHub to save progress.');
+      return;
+    }
+
+    setSaveStatus('Saving progress...');
+    try {
+      const response = await fetch('/api/progress/url-shortener', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          score: simulation.score.overall,
+          latencyMs: simulation.totalLatencyMs,
+          errorRate: simulation.totalErrorRate,
+          architecture: { nodes, edges },
+          result: simulation,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Progress save failed');
+      const data = await response.json();
+      setSavedProgress(data.progress);
+      setSaveStatus(`Saved. Best score ${data.progress.bestScore}% across ${data.progress.simulationRuns} run(s).`);
+    } catch {
+      setSaveStatus('Progress could not be saved. Your local canvas still works.');
+    }
+  }
+
   function runSimulation() {
     setIsRunning(true);
     setEdges((current) => current.map((edge) => ({ ...edge, animated: true })));
-    const simulation = simulateArchitecture(nodes, edges);
+    const simulation = simulateArchitecture(nodes, edges, traffic);
     setTimeout(() => {
       setResult(simulation);
       setNodes((current) => current.map((node) => {
@@ -100,6 +168,7 @@ function CanvasInner() {
         return { ...node, data: { ...node.data, status: component.status, utilization: component.utilization, latencyMs: component.latencyMs } };
       }));
       setIsRunning(false);
+      void syncProgress(simulation);
     }, 650);
   }
 
@@ -138,9 +207,9 @@ function CanvasInner() {
 
   return (
     <div className="grid h-[760px] overflow-hidden rounded-3xl border border-white/10 bg-ink/80 lg:grid-cols-[290px_minmax(0,1fr)_360px]">
-      <ComponentSidebar />
+      <ComponentSidebar traffic={traffic} onTrafficChange={setTraffic} />
       <main className="relative min-h-0" ref={wrapperRef}>
-        <div className="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
+        <div className="absolute left-4 top-4 z-10 flex max-w-[calc(100%-2rem)] flex-wrap gap-2">
           <button onClick={runSimulation} disabled={isRunning} className="inline-flex items-center gap-2 rounded-2xl bg-cyan px-4 py-2 text-sm font-bold text-ink hover:bg-cyan-200 disabled:opacity-60">
             <Play className="h-4 w-4" /> {isRunning ? 'Simulating...' : 'Run Simulation'}
           </button>
@@ -149,6 +218,10 @@ function CanvasInner() {
           <button onClick={loadSaved} className="rounded-2xl border border-white/15 bg-panel/90 px-3 py-2 text-sm text-white hover:bg-white/10">Load</button>
           <button onClick={reset} className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-panel/90 px-3 py-2 text-sm text-white hover:bg-white/10"><RotateCcw className="h-4 w-4" /> Reset</button>
           <button onClick={clearCanvas} className="inline-flex items-center gap-2 rounded-2xl border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-100 hover:bg-red-500/20"><Trash2 className="h-4 w-4" /> Clear</button>
+          <div className="rounded-2xl border border-cyan/20 bg-panel/90 px-3 py-2 text-xs text-slate-300">
+            {saveStatus}
+            {savedProgress && <span className="ml-2 text-cyan">Best: {savedProgress.bestScore}% · Runs: {savedProgress.simulationRuns}</span>}
+          </div>
         </div>
         <ReactFlow
           nodes={nodes}

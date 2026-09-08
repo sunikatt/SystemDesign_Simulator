@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Bot, LineChart, Network, PlayCircle } from 'lucide-react';
+import { AuthControls } from '@/features/auth/AuthControls';
 
 const steps = [
   'Read requirements',
@@ -20,9 +21,12 @@ export default function HomePage() {
           </div>
           <span className="text-lg font-semibold tracking-tight">SystemDesign Lab</span>
         </div>
-        <Link href="/challenges/url-shortener" className="rounded-full border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/10">
-          Open MVP
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/challenges/url-shortener" className="rounded-full border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/10">
+            Open MVP
+          </Link>
+          <AuthControls />
+        </div>
       </nav>
 
       <section className="mx-auto grid max-w-7xl gap-10 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -34,7 +38,7 @@ export default function HomePage() {
             Don&apos;t just read system design. Build it, run it, break it.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            Practice the URL Shortener challenge with a visual architecture canvas, mathematical traffic simulation, bottleneck detection, and beginner-friendly explanations.
+            Practice the URL Shortener challenge with a visual architecture canvas, mathematical traffic simulation, bottleneck detection, beginner-friendly explanations, Google/GitHub login, and saved progress.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/challenges/url-shortener" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 font-semibold text-ink hover:bg-cyan-100">

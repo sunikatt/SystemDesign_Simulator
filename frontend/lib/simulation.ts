@@ -91,10 +91,10 @@ function hasPath(nodes: Node<ArchitectureNodeData>[], edges: Edge[], fromType: C
   return false;
 }
 
-export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges: Edge[]): SimulationResult {
-  const total = urlShortenerTraffic.totalRps;
-  const reads = total * urlShortenerTraffic.readPercentage;
-  const writes = total * urlShortenerTraffic.writePercentage;
+export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges: Edge[], traffic: TrafficProfile = urlShortenerTraffic): SimulationResult {
+  const total = traffic.totalRps;
+  const reads = total * traffic.readPercentage;
+  const writes = total * traffic.writePercentage;
   const components: ComponentSimulation[] = [];
 
   const gateway = findNode(nodes, 'apiGateway');
@@ -219,7 +219,7 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
     .slice(0, 5);
 
   return {
-    traffic: urlShortenerTraffic,
+    traffic,
     components,
     totalLatencyMs,
     totalErrorRate,
@@ -232,6 +232,7 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
       'latency = base_latency × (1 + utilization²) plus overload penalty above 100%',
       'queue_depth grows slowly below capacity and rapidly above capacity',
       'Redis read hits = read_rps × cache_hit_rate; Redis misses go to PostgreSQL',
+      `traffic mix = ${Math.round(traffic.readPercentage * 100)}% reads / ${Math.round(traffic.writePercentage * 100)}% writes at ${traffic.totalRps.toLocaleString()} RPS`,
       'PostgreSQL utilization = max(read_qps / read_capacity, write_qps / write_capacity)',
     ],
   };
