@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ClipboardList, PlayCircle, Signal } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, ClipboardList, Layers3, PlayCircle, Signal } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
 
 type Difficulty = 'Beginner' | 'Core' | 'Intermediate' | 'Advanced';
@@ -152,6 +152,52 @@ const difficultyDescriptions: Record<Difficulty, string> = {
   Advanced: 'Large-scale distributed systems with hot partitions, global scale, streaming, and hard correctness trade-offs.',
 };
 
+const solveSteps = [
+  'Clarify functional and non-functional requirements',
+  'Estimate traffic, storage, bandwidth, and peak load',
+  'Design APIs and main read/write flows',
+  'Model database tables, indexes, cache keys, and queues',
+  'Place components on the architecture and explain why each exists',
+  'Add failure handling: retries, fallback, DLQ, circuit breakers, and monitoring',
+  'Run or review the rubric, find bottlenecks, and improve the design',
+];
+
+const componentKits: Record<string, string[]> = {
+  'URL Shortener': ['Client', 'API Gateway', 'Load Balancer', 'URL Service', 'Redis Cache', 'PostgreSQL', 'Analytics Queue', 'Workers'],
+  'Rate Limiter': ['API Gateway', 'Limiter Service', 'Redis Counters', 'Token Bucket Store', 'Policy DB', 'Metrics + Alerts'],
+  'Twitter / X Feed': ['Post Service', 'Follow Graph', 'Fanout Queue', 'Timeline Cache', 'Ranking Service', 'Media/CDN', 'Notification Service'],
+  'Notification Service': ['Event Queue', 'Notification Orchestrator', 'Template Service', 'Email Worker', 'SMS Worker', 'Push Worker', 'DLQ', 'Provider Fallback'],
+  'Ride Sharing Location': ['Location Gateway', 'Stream Processor', 'Geo Index', 'Driver State Store', 'Dispatch Service', 'WebSocket Gateway', 'Location History'],
+  'Distributed Cache': ['Client SDK', 'Hash Ring Router', 'Cache Nodes', 'Replica Nodes', 'Cluster Manager', 'Eviction Engine', 'DB Fallback'],
+  'Search Autocomplete': ['Search API', 'Prefix Index/Trie', 'Ranking Store', 'Redis Hot Prefix Cache', 'Indexer Pipeline', 'Query Logs'],
+  'Video Streaming Service': ['Upload API', 'Object Storage', 'Transcode Queue', 'Transcoder Workers', 'Metadata DB', 'CDN', 'Playback API'],
+  'Messaging App / Chat': ['WebSocket Gateway', 'Chat Service', 'Message Store', 'Fanout Queue', 'Presence Redis', 'Push Notifications'],
+  'Web Crawler': ['URL Frontier', 'Scheduler', 'Crawler Workers', 'Robots Cache', 'Dedup Store', 'Parser', 'Index Pipeline'],
+  'Code / Text Sharing like Pastebin': ['Paste API', 'Metadata DB', 'Object Storage', 'Redis Cache', 'Expiry Worker', 'Moderation Queue'],
+  'Concert Ticket Sale': ['Waiting Room', 'Inventory Service', 'Reservation Store', 'Payment Service', 'Order Service', 'Anti-bot Layer', 'Queue'],
+  'Distributed ID Generator': ['ID Generator Service/SDK', 'Worker ID Allocator', 'Clock Monitor', 'Sequence Counter', 'Metrics'],
+  'Real-time Leaderboard': ['Score API', 'Validation Service', 'Redis Sorted Sets', 'Event Log', 'Rank Cache', 'WebSocket Updates'],
+  'File Storage Service': ['Upload API', 'Signed URL Service', 'Object Storage', 'Metadata DB', 'Permission Service', 'Scan Queue', 'CDN'],
+};
+
+const learningOutcomes: Record<string, string[]> = {
+  'URL Shortener': ['Read-heavy design', 'Cache-aside redirects', 'Async analytics'],
+  'Rate Limiter': ['Token bucket decisions', 'Distributed counters', 'Fail-open vs fail-closed'],
+  'Twitter / X Feed': ['Hybrid fanout', 'Timeline caching', 'Celebrity hot-user handling'],
+  'Notification Service': ['Queue-based delivery', 'Retries + DLQ', 'Provider fallback'],
+  'Ride Sharing Location': ['Geo indexing', 'High-write streams', 'Freshness vs history'],
+  'Distributed Cache': ['Consistent hashing', 'Replication/failover', 'Hot-key mitigation'],
+  'Search Autocomplete': ['Prefix indexing', 'Ranking freshness', 'Hot prefix caching'],
+  'Video Streaming Service': ['Async transcoding', 'CDN delivery', 'Adaptive bitrate'],
+  'Messaging App / Chat': ['Realtime fanout', 'Message ordering', 'Offline sync'],
+  'Web Crawler': ['Frontier scheduling', 'Politeness', 'Deduplication'],
+  'Code / Text Sharing like Pastebin': ['TTL design', 'Read-heavy content', 'Abuse moderation'],
+  'Concert Ticket Sale': ['Inventory correctness', 'Waiting room fairness', 'Payment idempotency'],
+  'Distributed ID Generator': ['Snowflake IDs', 'Clock drift', 'Worker coordination'],
+  'Real-time Leaderboard': ['Sorted sets', 'Top-K/rank lookup', 'Realtime updates'],
+  'File Storage Service': ['Metadata vs bytes', 'Signed URLs', 'Resumable upload'],
+};
+
 export default function PracticeProblemsPage() {
   return (
     <main className="min-h-screen px-6 py-8">
@@ -199,6 +245,26 @@ export default function PracticeProblemsPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-cyan/20 bg-cyan/10 p-5">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan/15 text-cyan">
+              <Layers3 className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan">Problem solver kit</p>
+              <h2 className="text-2xl font-black text-white">How every practice problem should be solved</h2>
+            </div>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {solveSteps.map((step, index) => (
+              <div key={step} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-cyan/15 text-sm font-black text-cyan">{index + 1}</div>
+                <p className="text-sm font-semibold leading-6 text-white">{step}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -261,10 +327,23 @@ export default function PracticeProblemsPage() {
                           </div>
                           <h3 className="mt-5 text-xl font-black text-white">{problem.title}</h3>
                           <p className="mt-3 text-sm leading-6 text-slate-300">{problem.description}</p>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {problem.topics.map((topic) => (
-                              <span key={topic} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300">{topic}</span>
-                            ))}
+                          <div className="mt-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Components to use</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {(componentKits[problem.title] ?? problem.topics).map((component) => (
+                                <span key={component} className="rounded-full border border-cyan/20 bg-cyan/10 px-3 py-1 text-xs text-cyan-100">{component}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="mt-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">You will learn</p>
+                            <ul className="mt-2 space-y-1">
+                              {(learningOutcomes[problem.title] ?? problem.topics).map((outcome) => (
+                                <li key={outcome} className="flex gap-2 text-xs leading-5 text-slate-300">
+                                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-300" /> {outcome}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                           <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan group-hover:text-cyan-100">
                             {isLive ? 'Start problem' : 'Coming soon'} {isLive && <ArrowRight className="h-4 w-4" />}
