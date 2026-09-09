@@ -144,8 +144,8 @@ export function PracticeWorkspace({
             </div>
           </div>
 
-          <div className="grid flex-1 gap-5 p-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="min-h-[420px] rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_1px_1px,rgba(148,163,184,0.22)_1px,transparent_0)] [background-size:24px_24px] p-4">
+          <div className="flex flex-1 flex-col gap-5 p-5">
+            <div className="min-h-[680px] rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_1px_1px,rgba(148,163,184,0.22)_1px,transparent_0)] [background-size:24px_24px] p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-white">Architecture canvas</p>
@@ -155,14 +155,14 @@ export function PracticeWorkspace({
               </div>
 
               {canvasComponents.length === 0 ? (
-                <div className="flex min-h-[320px] items-center justify-center rounded-3xl border border-dashed border-white/15 bg-black/20 p-6 text-center">
+                <div className="flex min-h-[560px] items-center justify-center rounded-3xl border border-dashed border-white/15 bg-black/20 p-6 text-center">
                   <div>
                     <p className="font-bold text-white">Canvas is empty</p>
                     <p className="mt-2 max-w-md text-sm leading-6 text-slate-400">Click components from the top bar or use Suggested design. Then explain the request path and failure path.</p>
                   </div>
                 </div>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                   {canvasComponents.map((component, index) => (
                     <div key={component.id} className="rounded-2xl border border-cyan/20 bg-ink/90 p-4 shadow-glow">
                       <div className="flex items-start justify-between gap-3">
@@ -179,7 +179,7 @@ export function PracticeWorkspace({
               )}
             </div>
 
-            <div className="space-y-4">
+            <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)_360px]">
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="text-sm font-semibold text-cyan">Rubric simulator</p>
