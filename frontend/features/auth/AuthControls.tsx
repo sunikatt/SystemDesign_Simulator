@@ -3,8 +3,21 @@
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import { LogOut, UserCircle } from 'lucide-react';
+import { authEnabled } from '@/lib/auth-enabled';
 
 export function AuthControls() {
+  if (!authEnabled) {
+    return (
+      <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-100">
+        Demo mode
+      </span>
+    );
+  }
+
+  return <AuthenticatedControls />;
+}
+
+function AuthenticatedControls() {
   const { data: session, status } = useSession();
 
   if (status === 'loading') {

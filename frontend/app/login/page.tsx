@@ -3,8 +3,17 @@
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { Github, Mail, Network } from 'lucide-react';
+import { authEnabled } from '@/lib/auth-enabled';
 
 export default function LoginPage() {
+  if (!authEnabled) {
+    return <LoginDisabled />;
+  }
+
+  return <LoginEnabled />;
+}
+
+function LoginEnabled() {
   const { data: session } = useSession();
 
   return (
@@ -46,6 +55,35 @@ export default function LoginPage() {
         <Link href="/" className="mt-6 inline-flex text-sm text-cyan-200 hover:text-cyan">
           Back to home
         </Link>
+      </div>
+    </main>
+  );
+}
+
+function LoginDisabled() {
+  return (
+    <main className="flex min-h-screen items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-panel/80 p-7 shadow-glow">
+        <div className="mb-7 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand">
+            <Network className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-white">Demo mode is enabled</h1>
+            <p className="text-sm text-slate-400">Login is optional and currently disabled for public sharing.</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm leading-6 text-emerald-100">
+          You can read all lessons and use the simulator without signing in. Progress saving can be enabled later with hosted Postgres and OAuth credentials.
+        </div>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Link href="/" className="inline-flex flex-1 justify-center rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
+            Back home
+          </Link>
+          <Link href="/practice-problems" className="inline-flex flex-1 justify-center rounded-2xl bg-white px-4 py-3 text-sm font-bold text-ink hover:bg-cyan-100">
+            Practice problems
+          </Link>
+        </div>
       </div>
     </main>
   );

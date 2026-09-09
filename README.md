@@ -38,10 +38,17 @@ Open http://localhost:3002
 
 This repo keeps the Next.js app inside `frontend/`. A root `vercel.json` is included so Vercel can install and build the frontend from the repo root.
 
-Required environment variables on Vercel:
+For the current public demo, keep login optional/disabled on Vercel:
 
 ```bash
-DATABASE_URL="file:./dev.db"
+NEXT_PUBLIC_AUTH_ENABLED="false"
+AUTH_ENABLED="false"
+```
+
+If you enable login later, also set:
+
+```bash
+DATABASE_URL="postgresql://..."
 NEXTAUTH_URL="https://your-vercel-domain.vercel.app"
 NEXTAUTH_SECRET="generate-a-strong-secret"
 ```
@@ -55,7 +62,7 @@ GITHUB_ID="..."
 GITHUB_SECRET="..."
 ```
 
-For sharing with other people, SQLite on Vercel is okay only for a demo without durable saved progress. For reliable auth/progress persistence, switch Prisma to a hosted database such as Postgres/Neon/Supabase before launch.
+For sharing with other people, keep auth disabled until a hosted database is connected. SQLite on Vercel is not reliable for durable saved progress. For reliable auth/progress persistence, switch Prisma to hosted Postgres such as Neon/Supabase before launch.
 
 ## Tech
 

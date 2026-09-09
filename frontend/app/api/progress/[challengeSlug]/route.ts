@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import { authOptions } from '@/lib/auth';
+import { authEnabled } from '@/lib/auth-enabled';
 import { prisma } from '@/lib/prisma';
 
 type ProgressPayload = {
@@ -22,6 +23,10 @@ function serialize(value: unknown) {
 }
 
 export async function GET(_request: Request, context: { params: Promise<{ challengeSlug: string }> }) {
+  if (!authEnabled) {
+    return NextResponse.json({ progress: null, mode: 'demo' });
+  }
+
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
 
@@ -38,6 +43,10 @@ export async function GET(_request: Request, context: { params: Promise<{ challe
 }
 
 export async function POST(request: Request, context: { params: Promise<{ challengeSlug: string }> }) {
+  if (!authEnabled) {
+    return NextResponse.json({ progress: null, mode: 'demo', saved: false });
+  }
+
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
 

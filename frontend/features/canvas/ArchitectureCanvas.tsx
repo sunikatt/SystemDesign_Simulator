@@ -5,7 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { addEdge, Background, BackgroundVariant, Connection, Controls, Edge, MiniMap, Node, ReactFlow, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow } from '@xyflow/react';
 import { Play, RotateCcw, Save, Sparkles, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import type { Session } from 'next-auth';
 import { defaultConfigs, componentLabels } from '@/lib/components';
+import { authEnabled } from '@/lib/auth-enabled';
 import { simulateArchitecture, urlShortenerTraffic } from '@/lib/simulation';
 import { ArchitectureNodeData, ComponentConfig, ComponentType, SimulationResult } from '@/types/simulation';
 import { ArchitectureNode } from './ArchitectureNode';
@@ -54,9 +56,8 @@ const suggestedEdges: Edge[] = [
   { id: 'svc-db-write', source: 'svc-1', target: 'db-1' },
 ];
 
-function CanvasInner() {
+function CanvasInner({ session }: { session: Session | null }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession();
   const { screenToFlowPosition, fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState<ArchitectureFlowNode>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -70,6 +71,12 @@ function CanvasInner() {
   const selectedNode = nodes.find((node) => node.selected);
 
   useEffect(() => {
+    if (!authEnabled) {
+      setSavedProgress(undefined);
+      setSaveStatus('Demo mode: progress is stored only in this browser.');
+      return;
+    }
+
     if (!session?.user) {
       setSavedProgress(undefined);
       setSaveStatus('Sign in to save simulator progress.');
@@ -128,6 +135,11 @@ function CanvasInner() {
   }
 
   async function syncProgress(simulation: SimulationResult) {
+    if (!authEnabled) {
+      setSaveStatus('Simulation complete. Demo mode keeps progress local only.');
+      return;
+    }
+
     if (!session?.user) {
       setSaveStatus('Simulation complete. Login with Google or GitHub to save progress.');
       return;
@@ -250,10 +262,15 @@ function CanvasInner() {
   );
 }
 
+function AuthenticatedCanvasInner() {
+  const { data: session } = useSession();
+  return <CanvasInner session={session} />;
+}
+
 export function ArchitectureCanvas() {
   return (
     <ReactFlowProvider>
-      <CanvasInner />
+      {authEnabled ? <AuthenticatedCanvasInner /> : <CanvasInner session={null} />}
     </ReactFlowProvider>
   );
 }

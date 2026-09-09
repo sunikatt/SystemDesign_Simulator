@@ -3,9 +3,14 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ArrowRight, Trophy } from 'lucide-react';
 import { authOptions } from '@/lib/auth';
+import { authEnabled } from '@/lib/auth-enabled';
 import { prisma } from '@/lib/prisma';
 
 export default async function DashboardPage() {
+  if (!authEnabled) {
+    return <DemoDashboard />;
+  }
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -83,6 +88,28 @@ export default async function DashboardPage() {
             </div>
           </div>
         </section>
+      </div>
+    </main>
+  );
+}
+
+function DemoDashboard() {
+  return (
+    <main className="min-h-screen px-6 py-8">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-panel/70 p-6">
+        <p className="text-sm font-semibold text-cyan">Demo mode</p>
+        <h1 className="mt-2 text-3xl font-black text-white">Login is optional right now</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-300">
+          Public users can read all content and use the simulator without an account. Saved cloud progress will be enabled later after connecting a hosted database like Neon/Supabase Postgres.
+        </p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Link href="/system-design-essentials" className="rounded-2xl bg-white px-4 py-3 text-center text-sm font-bold text-ink hover:bg-cyan-100">
+            Learn essentials
+          </Link>
+          <Link href="/practice-problems" className="rounded-2xl border border-white/15 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-white/10">
+            Open practice problems
+          </Link>
+        </div>
       </div>
     </main>
   );
