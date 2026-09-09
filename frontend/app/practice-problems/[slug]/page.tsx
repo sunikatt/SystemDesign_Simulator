@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight, CheckCircle2, Code2, Database, Layers3, Lightbulb, ListChecks, XCircle } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
 import { InteractiveQuiz } from '@/features/essentials/InteractiveQuiz';
+import { PracticeWorkspace } from '@/features/practice/PracticeWorkspace';
 import { getPracticeProblem, practiceProblems } from '@/lib/practice-problems';
 
 export function generateStaticParams() {
@@ -45,6 +46,16 @@ export default async function PracticeProblemDetailPage({ params }: { params: Pr
                 </Link>
               )}
             </Card>
+
+            <PracticeWorkspace
+              slug={problem.slug}
+              title={problem.title}
+              description={problem.description}
+              components={problem.components}
+              functionalRequirements={problem.requirements.functional}
+              nonFunctionalRequirements={problem.requirements.nonFunctional}
+              rubric={problem.rubric}
+            />
 
             <div className="grid gap-5 lg:grid-cols-2">
               <Card eyebrow="Requirements" title="Functional requirements" icon={<ListChecks className="h-5 w-5" />}>
