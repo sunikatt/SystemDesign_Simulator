@@ -50,7 +50,7 @@ export function ComponentSidebar({ traffic, onTrafficChange }: ComponentSidebarP
 
       <div className="mt-2">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Components</p>
-        <p className="mt-2 text-sm text-slate-400">Drag onto the canvas, connect them, then run the simulation.</p>
+        <p className="mt-2 text-sm text-slate-400">Drag production components onto the canvas, connect frontend-to-backend traffic flow, then run the simulation.</p>
       </div>
       <div className="space-y-3">
         {palette.map((type) => (
@@ -66,7 +66,7 @@ export function ComponentSidebar({ traffic, onTrafficChange }: ComponentSidebarP
         ))}
       </div>
       <div className="mt-auto rounded-2xl border border-violet-400/30 bg-violet-500/10 p-3 text-xs leading-5 text-violet-100">
-        Tip: Start with Gateway → Load Balancer → URL Service → Redis → PostgreSQL. Then try removing Redis to see the database bottleneck.
+        Tip: Start with API Gateway → Load Balancer → URL Service → Redis → PostgreSQL. The gateway routes/protects URL traffic; the balancer spreads it across backend URL service servers.
       </div>
     </aside>
   );

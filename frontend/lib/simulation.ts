@@ -114,7 +114,7 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
       capacity: gateway.data.config.capacityRps ?? 1,
       baseLatency: gateway.data.config.latencyMs ?? 5,
       baseFailureRate: gateway.data.config.failureRate ?? 0,
-      explanation: 'All external traffic enters through the API Gateway.',
+      explanation: 'All frontend/mobile/client traffic enters through the API Gateway, where URL Shortener APIs are routed, rate-limited, logged, and forwarded to healthy backend server pools.'
     }));
   }
 
@@ -129,7 +129,7 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
       writeRps: writes,
       capacity,
       baseLatency: lb.data.config.latencyMs ?? 3,
-      explanation: `Traffic is distributed across ${lb.data.config.instances ?? 1} load balancer instance(s).`,
+      explanation: `Gateway traffic is distributed across ${lb.data.config.instances ?? 1} load balancer instance(s), then spread to URL service servers using health checks.`
     }));
   }
 
@@ -144,7 +144,7 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
       writeRps: writes,
       capacity,
       baseLatency: app.data.config.processingLatencyMs ?? 15,
-      explanation: 'The URL service handles redirects and short URL creation logic.',
+      explanation: 'The stateless backend URL service handles redirects, short URL creation, cache lookup, and durable database writes.'
     }));
   }
 
@@ -231,6 +231,8 @@ export function simulateArchitecture(nodes: Node<ArchitectureNodeData>[], edges:
       'status: 0–70% healthy, 70–85% warning, 85–100% high load, 100%+ overloaded',
       'latency = base_latency × (1 + utilization²) plus overload penalty above 100%',
       'queue_depth grows slowly below capacity and rapidly above capacity',
+      'API Gateway routes URL Shortener API traffic and forwards requests to healthy backend pools',
+      'Load Balancer distributes gateway traffic across stateless URL service instances',
       'Redis read hits = read_rps × cache_hit_rate; Redis misses go to PostgreSQL',
       `traffic mix = ${Math.round(traffic.readPercentage * 100)}% reads / ${Math.round(traffic.writePercentage * 100)}% writes at ${traffic.totalRps.toLocaleString()} RPS`,
       'PostgreSQL utilization = max(read_qps / read_capacity, write_qps / write_capacity)',
@@ -251,10 +253,10 @@ function recommendationsFor(bottleneck: ComponentSimulation, hasRedis: boolean):
     return [{ title: 'Add more stateless service instances', why: 'The application tier is horizontally scalable when it does not store local session state.', tradeOff: 'More instances cost more and require deployment automation.' }];
   }
   if (bottleneck.type === 'loadBalancer') {
-    return [{ title: 'Increase load balancer capacity', why: 'The balancer must handle all traffic before it reaches services.', tradeOff: 'Larger or more balancers increase infrastructure cost.' }];
+    return [{ title: 'Scale load balancing capacity', why: 'After the API Gateway routes requests, the balancer must distribute traffic across URL service servers without becoming the choke point.', tradeOff: 'Larger or more balancers increase infrastructure cost.' }];
   }
   if (bottleneck.type === 'apiGateway') {
-    return [{ title: 'Add rate limiting or increase gateway capacity', why: 'The gateway is the first component and must absorb all client traffic safely.', tradeOff: 'Strict limits can reject legitimate spikes.' }];
+    return [{ title: 'Scale the API Gateway tier or add stricter rate limits', why: 'The gateway is the first production component for all URL Shortener traffic. It must route, throttle, and forward traffic safely to backend pools.', tradeOff: 'Strict limits can reject legitimate spikes; more gateway capacity costs more.' }];
   }
   return [{ title: 'Scale Redis or reduce cache traffic', why: 'The cache is receiving more operations than configured capacity.', tradeOff: 'Redis clustering adds operational complexity.' }];
 }

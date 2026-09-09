@@ -9,9 +9,9 @@ export const componentLabels: Record<ComponentType, string> = {
 };
 
 export const componentDescriptions: Record<ComponentType, string> = {
-  apiGateway: 'Entry point that authenticates, routes, rate-limits, and protects incoming API traffic.',
-  loadBalancer: 'Distributes traffic across multiple backend service instances.',
-  appService: 'Runs URL shortening business logic: create short codes and resolve redirects.',
+  apiGateway: 'Production entry point for the URL Shortener: routes /api/shorten and /{code}, applies auth/rate limits, and forwards traffic to healthy backend pools.',
+  loadBalancer: 'Distributes gateway traffic across multiple URL service servers/instances using health checks.',
+  appService: 'Backend URL service that runs business logic: create short codes, resolve redirects, and stay stateless for horizontal scaling.',
   redis: 'Fast in-memory cache used to serve frequently accessed URLs without hitting the database.',
   postgres: 'Durable relational database where URL mappings are persisted.',
 };

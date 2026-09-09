@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Bot, LineChart, Network, PlayCircle } from 'lucide-react';
+import { ArrowRight, Bot, ClipboardList, LineChart, Network, PlayCircle } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
 
 const steps = [
@@ -9,6 +9,37 @@ const steps = [
   'Find bottlenecks',
   'Fix trade-offs',
   'Get feedback',
+];
+
+const learningPaths = [
+  {
+    title: 'System Design Essentials',
+    status: 'Live now',
+    description: 'Foundation concepts using concrete components: API Gateway, load balancer, stateless backend services, Redis cache, PostgreSQL, traffic, latency, bottlenecks, and trade-offs.',
+    topics: ['Functional vs non-functional requirements', 'APIs', 'Caching', 'Databases'],
+    href: '/system-design-essentials',
+  },
+  {
+    title: 'System Design with Real World Examples',
+    status: 'Coming soon',
+    description: 'End-to-end product examples that connect requirements, APIs, storage, async workflows, observability, deployments, and cost-aware scaling.',
+    topics: ['Rate limiter', 'Notification system', 'File upload service', 'News feed basics'],
+    href: '/system-design-real-world-examples',
+  },
+  {
+    title: 'System Design Advanced',
+    status: 'Planned',
+    description: 'Distributed systems depth: sharding, replication, consistency, stream processing, multi-region routing, disaster recovery, hot partitions, and SRE-style reliability.',
+    topics: ['Distributed cache', 'Video processing', 'Search system', 'Multi-region systems'],
+    href: '/system-design-advanced',
+  },
+  {
+    title: 'Practice Problems',
+    status: 'Live now',
+    description: 'Hands-on design problems and simulators. This is where product-specific challenges live, including the production URL Shortener lab.',
+    topics: ['URL Shortener lab', 'Canvas practice', 'Simulation scoring', 'Bottleneck fixing'],
+    href: '/practice-problems',
+  },
 ];
 
 export default function HomePage() {
@@ -22,8 +53,8 @@ export default function HomePage() {
           <span className="text-lg font-semibold tracking-tight">SystemDesign Lab</span>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/challenges/url-shortener" className="rounded-full border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/10">
-            Open MVP
+          <Link href="/system-design-essentials" className="rounded-full border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/10">
+            Open Essentials
           </Link>
           <AuthControls />
         </div>
@@ -38,15 +69,15 @@ export default function HomePage() {
             Don&apos;t just read system design. Build it, run it, break it.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            Practice the URL Shortener challenge with a visual architecture canvas, mathematical traffic simulation, bottleneck detection, beginner-friendly explanations, Google/GitHub login, and saved progress.
+            Practice production-style designs in four sections: System Design Essentials, System Design with Real World Examples, System Design Advanced, and Practice Problems. Learn concepts first, then apply them in focused hands-on problems.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/challenges/url-shortener" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 font-semibold text-ink hover:bg-cyan-100">
-              Start URL Shortener Challenge <ArrowRight className="h-4 w-4" />
+            <Link href="/system-design-essentials" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 font-semibold text-ink hover:bg-cyan-100">
+              Start Essentials <ArrowRight className="h-4 w-4" />
             </Link>
-            <a href="#how" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/10">
-              See how it works
-            </a>
+            <Link href="/practice-problems" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/10">
+              Open Practice Problems
+            </Link>
           </div>
         </div>
 
@@ -54,8 +85,8 @@ export default function HomePage() {
           <div className="rounded-[1.5rem] border border-white/10 bg-ink/80 p-5">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">Simulation Preview</p>
-                <h2 className="text-xl font-bold">URL Shortener @ 10,000 RPS</h2>
+                <p className="text-sm text-slate-400">Practice Preview</p>
+                <h2 className="text-xl font-bold">Build, simulate, and improve</h2>
               </div>
               <PlayCircle className="h-8 w-8 text-cyan" />
             </div>
@@ -72,6 +103,37 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl pb-16">
+        <div className="mb-8 max-w-3xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan">Learning paths</p>
+          <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">Four clear sections from basics to hands-on practice.</h2>
+          <p className="mt-4 text-slate-300">
+            Keep learning paths clean: concepts stay in Essentials, end-to-end examples stay in Real World Examples, deep distributed systems stay in Advanced, and live simulators stay in Practice Problems.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {learningPaths.map((path, index) => (
+            <Link key={path.title} href={path.href} className="group glass rounded-3xl p-5 transition hover:-translate-y-1 hover:border-cyan/40">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan/15 text-sm font-black text-cyan">{index + 1}</div>
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-300">{path.status}</span>
+              </div>
+              <h3 className="mt-5 text-2xl font-black text-white">{path.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{path.description}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {path.topics.map((topic) => (
+                  <span key={topic} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300">{topic}</span>
+                ))}
+              </div>
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan group-hover:text-cyan-100">
+                {path.title === 'Practice Problems' ? <ClipboardList className="h-4 w-4" /> : null}
+                Open section <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 

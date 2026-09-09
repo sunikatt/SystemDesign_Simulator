@@ -3,9 +3,10 @@ import { CheckCircle2 } from 'lucide-react';
 const requirements = [
   '100,000 users',
   '10,000 requests per second',
-  '90% reads / 10% writes',
+  '90% redirects / 10% create-link writes',
   'Target latency below 200ms',
-  'High availability required',
+  'API Gateway must route and protect traffic',
+  'Traffic must distribute across backend servers',
   'URLs must persist',
   'Frequently accessed URLs should load quickly',
 ];
@@ -13,10 +14,10 @@ const requirements = [
 export function RequirementsCard() {
   return (
     <section className="glass rounded-3xl p-5">
-      <p className="text-sm font-medium text-cyan">Challenge Requirements</p>
-      <h1 className="mt-2 text-3xl font-black text-white">Design a URL Shortener</h1>
+      <p className="text-sm font-medium text-cyan">System Design Essentials · Production Architecture</p>
+      <h1 className="mt-2 text-3xl font-black text-white">Design a Production URL Shortener</h1>
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        Build a system that creates short links and redirects users to original URLs under high read traffic.
+        Build a frontend + backend system that creates short links and redirects users to original URLs under high read traffic. In production, the API Gateway is the public entry point for URL APIs; it routes, protects, logs, rate-limits, and forwards traffic toward healthy backend server pools.
       </p>
       <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {requirements.map((item) => (

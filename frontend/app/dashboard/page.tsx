@@ -47,16 +47,17 @@ export default async function DashboardPage() {
               <Trophy className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">System Basics Path</h2>
-              <p className="text-sm text-slate-400">We start with real-world examples in simulator format.</p>
+              <h2 className="text-xl font-bold text-white">Learning paths</h2>
+              <p className="text-sm text-slate-400">Three tracks: System Design Essentials, System Design, and Advanced System Design.</p>
             </div>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="font-bold text-white">URL Shortener Architecture</h3>
-                <p className="mt-1 text-sm text-slate-400">API Gateway, load balancing, stateless services, cache, database bottlenecks, latency, and trade-offs.</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">System Design Essentials</p>
+                <h3 className="mt-1 font-bold text-white">Production URL Shortener Architecture</h3>
+                <p className="mt-1 text-sm text-slate-400">Frontend clients, API Gateway routing/rate limits, traffic distribution across backend URL service servers, Redis cache, PostgreSQL persistence, latency, bottlenecks, and trade-offs.</p>
                 {urlProgress && (
                   <p className="mt-2 text-xs text-slate-500">Last updated {urlProgress.updatedAt.toLocaleString()}</p>
                 )}
@@ -71,9 +72,14 @@ export default async function DashboardPage() {
                 </div>
                 <p className="mt-2 text-xs text-slate-500">Status: {urlProgress?.status ?? 'NOT_STARTED'}</p>
               </div>
-              <Link href="/challenges/url-shortener" className="rounded-2xl border border-white/15 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-white/10">
-                Open challenge
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/system-design-essentials" className="rounded-2xl bg-white px-4 py-2 text-center text-sm font-bold text-ink hover:bg-cyan-100">
+                  Learn essentials
+                </Link>
+                <Link href="/challenges/url-shortener" className="rounded-2xl border border-white/15 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-white/10">
+                  Open challenge
+                </Link>
+              </div>
             </div>
           </div>
         </section>
