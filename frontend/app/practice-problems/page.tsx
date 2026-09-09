@@ -1,202 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, CheckCircle2, ClipboardList, Layers3, PlayCircle, Signal } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
-
-type Difficulty = 'Beginner' | 'Core' | 'Intermediate' | 'Advanced';
-
-type PracticeProblem = {
-  title: string;
-  difficulty: Difficulty;
-  status: 'Live now' | 'Coming soon';
-  description: string;
-  href: string;
-  topics: string[];
-};
-
-const practiceProblems: PracticeProblem[] = [
-  {
-    title: 'URL Shortener',
-    difficulty: 'Beginner',
-    status: 'Live now',
-    description: 'Design the request path from clients to API Gateway, backend services, Redis cache, and PostgreSQL. Run the simulator, find bottlenecks, and improve the architecture.',
-    href: '/challenges/url-shortener',
-    topics: ['API Gateway', 'Load balancing', 'Caching', 'Database capacity', 'Scoring'],
-  },
-  {
-    title: 'Rate Limiter',
-    difficulty: 'Core',
-    status: 'Coming soon',
-    description: 'Design per-user, per-IP, and global limits using token bucket, sliding window counters, Redis, and clear 429 behavior.',
-    href: '#',
-    topics: ['Token bucket', 'Redis counters', 'Sliding window', 'Abuse prevention'],
-  },
-  {
-    title: 'Twitter / X Feed',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design timelines, fanout-on-write/read, ranking, media metadata, celebrity accounts, caching, and feed freshness trade-offs.',
-    href: '#',
-    topics: ['Fanout', 'Ranking', 'Timeline cache', 'Hot users'],
-  },
-  {
-    title: 'Notification Service',
-    difficulty: 'Core',
-    status: 'Coming soon',
-    description: 'Design email, SMS, and push notification delivery with queues, workers, retries, templates, user preferences, and provider failover.',
-    href: '#',
-    topics: ['Queues', 'Workers', 'Retries', 'DLQ'],
-  },
-  {
-    title: 'Ride Sharing Location',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design real-time driver location ingestion, geo-indexing, nearby driver search, map updates, and high-write streaming pipelines.',
-    href: '#',
-    topics: ['Geo indexing', 'Streams', 'WebSockets', 'High writes'],
-  },
-  {
-    title: 'Distributed Cache',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design a Redis-like cache with consistent hashing, replication, eviction, hot key handling, failover, and cache consistency choices.',
-    href: '#',
-    topics: ['Consistent hashing', 'Eviction', 'Replication', 'Hot keys'],
-  },
-  {
-    title: 'Search Autocomplete',
-    difficulty: 'Intermediate',
-    status: 'Coming soon',
-    description: 'Design low-latency typeahead suggestions using tries, prefix indexes, ranking signals, caching, and near-real-time index updates.',
-    href: '#',
-    topics: ['Prefix index', 'Ranking', 'Caching', 'Index refresh'],
-  },
-  {
-    title: 'Video Streaming Service',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design upload, transcoding, storage, CDN delivery, adaptive bitrate playback, metadata, recommendations, and global scale.',
-    href: '#',
-    topics: ['Transcoding', 'CDN', 'Object storage', 'ABR'],
-  },
-  {
-    title: 'Messaging App / Chat',
-    difficulty: 'Intermediate',
-    status: 'Coming soon',
-    description: 'Design one-to-one and group chat with WebSockets, message persistence, delivery acknowledgements, ordering, and offline sync.',
-    href: '#',
-    topics: ['WebSockets', 'Ordering', 'Presence', 'Offline sync'],
-  },
-  {
-    title: 'Web Crawler',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design URL frontier, politeness rules, robots.txt handling, deduplication, distributed workers, parsing, and crawl freshness.',
-    href: '#',
-    topics: ['URL frontier', 'Deduplication', 'Workers', 'Politeness'],
-  },
-  {
-    title: 'Code / Text Sharing like Pastebin',
-    difficulty: 'Beginner',
-    status: 'Coming soon',
-    description: 'Design paste creation, custom or generated IDs, expiration, privacy settings, syntax-highlight metadata, and read-heavy access.',
-    href: '#',
-    topics: ['ID generation', 'TTL', 'Read-heavy', 'Abuse controls'],
-  },
-  {
-    title: 'Concert Ticket Sale',
-    difficulty: 'Advanced',
-    status: 'Coming soon',
-    description: 'Design high-demand ticket inventory, waiting rooms, fairness, reservations, payment flow, anti-bot controls, and oversell prevention.',
-    href: '#',
-    topics: ['Inventory locks', 'Waiting room', 'Payments', 'Anti-bot'],
-  },
-  {
-    title: 'Distributed ID Generator',
-    difficulty: 'Core',
-    status: 'Coming soon',
-    description: 'Design unique sortable IDs using Snowflake-style workers, timestamp bits, sequence numbers, clock drift handling, and availability trade-offs.',
-    href: '#',
-    topics: ['Snowflake', 'Clock drift', 'Sequences', 'Uniqueness'],
-  },
-  {
-    title: 'Real-time Leaderboard',
-    difficulty: 'Intermediate',
-    status: 'Coming soon',
-    description: 'Design score updates, top-K queries, rank lookup, Redis sorted sets, sharding, season resets, and real-time client updates.',
-    href: '#',
-    topics: ['Sorted sets', 'Top-K', 'Sharding', 'Real-time updates'],
-  },
-  {
-    title: 'File Storage Service',
-    difficulty: 'Intermediate',
-    status: 'Coming soon',
-    description: 'Design upload/download APIs, object storage, metadata database, permissions, resumable upload, deduplication, and sharing links.',
-    href: '#',
-    topics: ['Object storage', 'Metadata', 'Permissions', 'Resumable upload'],
-  },
-];
-
-const difficulties: Difficulty[] = ['Beginner', 'Core', 'Intermediate', 'Advanced'];
-
-const difficultyStyles: Record<Difficulty, string> = {
-  Beginner: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-100',
-  Core: 'border-cyan/30 bg-cyan/10 text-cyan-100',
-  Intermediate: 'border-amber-400/30 bg-amber-500/10 text-amber-100',
-  Advanced: 'border-rose-400/30 bg-rose-500/10 text-rose-100',
-};
-
-const difficultyDescriptions: Record<Difficulty, string> = {
-  Beginner: 'Start here: clean requirements, APIs, basic storage, caching, and simple scale.',
-  Core: 'Common interview building blocks: rate limits, queues, IDs, consistency, and reliability.',
-  Intermediate: 'Multi-component systems with real-time reads/writes, ranking, permissions, and sharding concerns.',
-  Advanced: 'Large-scale distributed systems with hot partitions, global scale, streaming, and hard correctness trade-offs.',
-};
-
-const solveSteps = [
-  'Clarify functional and non-functional requirements',
-  'Estimate traffic, storage, bandwidth, and peak load',
-  'Design APIs and main read/write flows',
-  'Model database tables, indexes, cache keys, and queues',
-  'Place components on the architecture and explain why each exists',
-  'Add failure handling: retries, fallback, DLQ, circuit breakers, and monitoring',
-  'Run or review the rubric, find bottlenecks, and improve the design',
-];
-
-const componentKits: Record<string, string[]> = {
-  'URL Shortener': ['Client', 'API Gateway', 'Load Balancer', 'URL Service', 'Redis Cache', 'PostgreSQL', 'Analytics Queue', 'Workers'],
-  'Rate Limiter': ['API Gateway', 'Limiter Service', 'Redis Counters', 'Token Bucket Store', 'Policy DB', 'Metrics + Alerts'],
-  'Twitter / X Feed': ['Post Service', 'Follow Graph', 'Fanout Queue', 'Timeline Cache', 'Ranking Service', 'Media/CDN', 'Notification Service'],
-  'Notification Service': ['Event Queue', 'Notification Orchestrator', 'Template Service', 'Email Worker', 'SMS Worker', 'Push Worker', 'DLQ', 'Provider Fallback'],
-  'Ride Sharing Location': ['Location Gateway', 'Stream Processor', 'Geo Index', 'Driver State Store', 'Dispatch Service', 'WebSocket Gateway', 'Location History'],
-  'Distributed Cache': ['Client SDK', 'Hash Ring Router', 'Cache Nodes', 'Replica Nodes', 'Cluster Manager', 'Eviction Engine', 'DB Fallback'],
-  'Search Autocomplete': ['Search API', 'Prefix Index/Trie', 'Ranking Store', 'Redis Hot Prefix Cache', 'Indexer Pipeline', 'Query Logs'],
-  'Video Streaming Service': ['Upload API', 'Object Storage', 'Transcode Queue', 'Transcoder Workers', 'Metadata DB', 'CDN', 'Playback API'],
-  'Messaging App / Chat': ['WebSocket Gateway', 'Chat Service', 'Message Store', 'Fanout Queue', 'Presence Redis', 'Push Notifications'],
-  'Web Crawler': ['URL Frontier', 'Scheduler', 'Crawler Workers', 'Robots Cache', 'Dedup Store', 'Parser', 'Index Pipeline'],
-  'Code / Text Sharing like Pastebin': ['Paste API', 'Metadata DB', 'Object Storage', 'Redis Cache', 'Expiry Worker', 'Moderation Queue'],
-  'Concert Ticket Sale': ['Waiting Room', 'Inventory Service', 'Reservation Store', 'Payment Service', 'Order Service', 'Anti-bot Layer', 'Queue'],
-  'Distributed ID Generator': ['ID Generator Service/SDK', 'Worker ID Allocator', 'Clock Monitor', 'Sequence Counter', 'Metrics'],
-  'Real-time Leaderboard': ['Score API', 'Validation Service', 'Redis Sorted Sets', 'Event Log', 'Rank Cache', 'WebSocket Updates'],
-  'File Storage Service': ['Upload API', 'Signed URL Service', 'Object Storage', 'Metadata DB', 'Permission Service', 'Scan Queue', 'CDN'],
-};
-
-const learningOutcomes: Record<string, string[]> = {
-  'URL Shortener': ['Read-heavy design', 'Cache-aside redirects', 'Async analytics'],
-  'Rate Limiter': ['Token bucket decisions', 'Distributed counters', 'Fail-open vs fail-closed'],
-  'Twitter / X Feed': ['Hybrid fanout', 'Timeline caching', 'Celebrity hot-user handling'],
-  'Notification Service': ['Queue-based delivery', 'Retries + DLQ', 'Provider fallback'],
-  'Ride Sharing Location': ['Geo indexing', 'High-write streams', 'Freshness vs history'],
-  'Distributed Cache': ['Consistent hashing', 'Replication/failover', 'Hot-key mitigation'],
-  'Search Autocomplete': ['Prefix indexing', 'Ranking freshness', 'Hot prefix caching'],
-  'Video Streaming Service': ['Async transcoding', 'CDN delivery', 'Adaptive bitrate'],
-  'Messaging App / Chat': ['Realtime fanout', 'Message ordering', 'Offline sync'],
-  'Web Crawler': ['Frontier scheduling', 'Politeness', 'Deduplication'],
-  'Code / Text Sharing like Pastebin': ['TTL design', 'Read-heavy content', 'Abuse moderation'],
-  'Concert Ticket Sale': ['Inventory correctness', 'Waiting room fairness', 'Payment idempotency'],
-  'Distributed ID Generator': ['Snowflake IDs', 'Clock drift', 'Worker coordination'],
-  'Real-time Leaderboard': ['Sorted sets', 'Top-K/rank lookup', 'Realtime updates'],
-  'File Storage Service': ['Metadata vs bytes', 'Signed URLs', 'Resumable upload'],
-};
+import { difficulties, difficultyDescriptions, difficultyStyles, practiceProblems, solveSteps } from '@/lib/practice-problems';
 
 export default function PracticeProblemsPage() {
   return (
@@ -209,7 +14,7 @@ export default function PracticeProblemsPage() {
             </div>
             <div>
               <div className="font-bold text-white">Practice Problems</div>
-              <div className="text-xs text-slate-400">Hands-on system design labs and simulators</div>
+              <div className="text-xs text-slate-400">Hands-on system design labs, components, and solution guides</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -223,21 +28,21 @@ export default function PracticeProblemsPage() {
         <section className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-center">
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan/30 bg-cyan/10 px-3 py-1 text-sm text-cyan-200">
-              <PlayCircle className="h-4 w-4" /> Learn by doing
+              <PlayCircle className="h-4 w-4" /> Learn by solving
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[1.02] tracking-tight text-white md:text-7xl">
-              Practice problems live here.
+              Practice problems with components, APIs, DB design, and rubrics.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-              Keep the learning tracks clean and put product-specific hands-on labs in this section. Start with the live URL Shortener simulator, then move through beginner, core, intermediate, and advanced design problems.
+              Each problem now includes the building blocks required to solve it: requirements, APIs, data model, architecture components, common mistakes, correct solution direction, scoring rubric, and quiz.
             </p>
           </div>
           <div className="glass rounded-[2rem] p-5">
             <div className="rounded-[1.5rem] border border-white/10 bg-ink/80 p-5">
               <p className="text-sm text-slate-400">Practice format</p>
-              <h2 className="mt-1 text-2xl font-black text-white">Each problem should include</h2>
+              <h2 className="mt-1 text-2xl font-black text-white">Each problem includes</h2>
               <div className="mt-5 space-y-3">
-                {['Requirements', 'Architecture canvas', 'Simulation or rubric', 'Bottleneck feedback', 'Improvement loop'].map((item, index) => (
+                {['Requirements', 'APIs + data model', 'Components to use', 'Common mistakes', 'Correct solution direction', 'Rubric + quiz'].map((item, index) => (
                   <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan/15 text-sm font-bold text-cyan">{index + 1}</div>
                     <div className="font-semibold text-white">{item}</div>
@@ -297,7 +102,7 @@ export default function PracticeProblemsPage() {
         <section className="pb-12">
           <div className="mb-6">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan">Problem list</p>
-            <h2 className="mt-2 text-3xl font-black text-white">Hands-on labs</h2>
+            <h2 className="mt-2 text-3xl font-black text-white">Hands-on labs and guided solution pages</h2>
           </div>
 
           <div className="space-y-10">
@@ -314,53 +119,40 @@ export default function PracticeProblemsPage() {
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {problems.map((problem) => {
-                      const isLive = problem.href !== '#';
-                      const content = (
-                        <>
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand/20 text-sm font-black text-violet-100">Lab</div>
-                            <div className="flex flex-col items-end gap-2">
-                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-300">{problem.status}</span>
-                              <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${difficultyStyles[problem.difficulty]}`}>{problem.difficulty}</span>
-                            </div>
+                    {problems.map((problem) => (
+                      <Link key={problem.slug} href={`/practice-problems/${problem.slug}`} className="group glass rounded-3xl p-5 transition hover:-translate-y-1 hover:border-cyan/40">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand/20 text-sm font-black text-violet-100">Lab</div>
+                          <div className="flex flex-col items-end gap-2">
+                            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-300">{problem.status}</span>
+                            <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${difficultyStyles[problem.difficulty]}`}>{problem.difficulty}</span>
                           </div>
-                          <h3 className="mt-5 text-xl font-black text-white">{problem.title}</h3>
-                          <p className="mt-3 text-sm leading-6 text-slate-300">{problem.description}</p>
-                          <div className="mt-4">
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Components to use</p>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {(componentKits[problem.title] ?? problem.topics).map((component) => (
-                                <span key={component} className="rounded-full border border-cyan/20 bg-cyan/10 px-3 py-1 text-xs text-cyan-100">{component}</span>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="mt-4">
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">You will learn</p>
-                            <ul className="mt-2 space-y-1">
-                              {(learningOutcomes[problem.title] ?? problem.topics).map((outcome) => (
-                                <li key={outcome} className="flex gap-2 text-xs leading-5 text-slate-300">
-                                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-300" /> {outcome}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan group-hover:text-cyan-100">
-                            {isLive ? 'Start problem' : 'Coming soon'} {isLive && <ArrowRight className="h-4 w-4" />}
-                          </div>
-                        </>
-                      );
-
-                      return isLive ? (
-                        <Link key={problem.title} href={problem.href} className="group glass rounded-3xl p-5 transition hover:-translate-y-1 hover:border-cyan/40">
-                          {content}
-                        </Link>
-                      ) : (
-                        <div key={problem.title} className="glass rounded-3xl p-5 opacity-75">
-                          {content}
                         </div>
-                      );
-                    })}
+                        <h3 className="mt-5 text-xl font-black text-white">{problem.title}</h3>
+                        <p className="mt-3 text-sm leading-6 text-slate-300">{problem.description}</p>
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Components to use</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {problem.components.slice(0, 7).map((component) => (
+                              <span key={component} className="rounded-full border border-cyan/20 bg-cyan/10 px-3 py-1 text-xs text-cyan-100">{component}</span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">You will learn</p>
+                          <ul className="mt-2 space-y-1">
+                            {problem.learningOutcomes.map((outcome) => (
+                              <li key={outcome} className="flex gap-2 text-xs leading-5 text-slate-300">
+                                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-300" /> {outcome}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan group-hover:text-cyan-100">
+                          Open solution guide <ArrowRight className="h-4 w-4" />
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 </div>
               );
