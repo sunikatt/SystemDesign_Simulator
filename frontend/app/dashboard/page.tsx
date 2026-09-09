@@ -1,15 +1,18 @@
 import Link from 'next/link';
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ArrowRight, Trophy } from 'lucide-react';
-import { authOptions } from '@/lib/auth';
 import { authEnabled } from '@/lib/auth-enabled';
-import { prisma } from '@/lib/prisma';
 
 export default async function DashboardPage() {
   if (!authEnabled) {
     return <DemoDashboard />;
   }
+
+  const [{ getServerSession }, { authOptions }, { prisma }] = await Promise.all([
+    import('next-auth'),
+    import('@/lib/auth'),
+    import('@/lib/prisma'),
+  ]);
 
   const session = await getServerSession(authOptions);
 

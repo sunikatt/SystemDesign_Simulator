@@ -1,8 +1,5 @@
-import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
-import { authOptions } from '@/lib/auth';
 import { authEnabled } from '@/lib/auth-enabled';
-import { prisma } from '@/lib/prisma';
 
 type ProgressPayload = {
   score: number;
@@ -27,6 +24,12 @@ export async function GET(_request: Request, context: { params: Promise<{ challe
     return NextResponse.json({ progress: null, mode: 'demo' });
   }
 
+  const [{ getServerSession }, { authOptions }, { prisma }] = await Promise.all([
+    import('next-auth'),
+    import('@/lib/auth'),
+    import('@/lib/prisma'),
+  ]);
+
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
 
@@ -46,6 +49,12 @@ export async function POST(request: Request, context: { params: Promise<{ challe
   if (!authEnabled) {
     return NextResponse.json({ progress: null, mode: 'demo', saved: false });
   }
+
+  const [{ getServerSession }, { authOptions }, { prisma }] = await Promise.all([
+    import('next-auth'),
+    import('@/lib/auth'),
+    import('@/lib/prisma'),
+  ]);
 
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
