@@ -21,8 +21,8 @@ export default async function PracticeProblemDetailPage({ params }: { params: Pr
   const next = practiceProblems[currentIndex + 1];
 
   return (
-    <main className="min-h-screen px-6 py-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <main className="min-h-screen px-4 py-5 lg:px-6">
+      <div className="mx-auto max-w-[1800px] space-y-6">
         <nav className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-panel/70 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-cyan">Practice Problem</p>
@@ -36,6 +36,16 @@ export default async function PracticeProblemDetailPage({ params }: { params: Pr
           </div>
         </nav>
 
+        <PracticeWorkspace
+          slug={problem.slug}
+          title={problem.title}
+          description={problem.description}
+          components={problem.components}
+          functionalRequirements={problem.requirements.functional}
+          nonFunctionalRequirements={problem.requirements.nonFunctional}
+          rubric={problem.rubric}
+        />
+
         <section className="grid gap-5 lg:grid-cols-[0.72fr_0.28fr]">
           <div className="space-y-5">
             <Card eyebrow="Goal" title="What you need to design" icon={<Lightbulb className="h-5 w-5" />}>
@@ -46,16 +56,6 @@ export default async function PracticeProblemDetailPage({ params }: { params: Pr
                 </Link>
               )}
             </Card>
-
-            <PracticeWorkspace
-              slug={problem.slug}
-              title={problem.title}
-              description={problem.description}
-              components={problem.components}
-              functionalRequirements={problem.requirements.functional}
-              nonFunctionalRequirements={problem.requirements.nonFunctional}
-              rubric={problem.rubric}
-            />
 
             <div className="grid gap-5 lg:grid-cols-2">
               <Card eyebrow="Requirements" title="Functional requirements" icon={<ListChecks className="h-5 w-5" />}>
