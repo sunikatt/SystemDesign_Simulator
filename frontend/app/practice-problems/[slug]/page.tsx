@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowRight, CheckCircle2, Code2, Database, Layers3, Lightbulb, ListChecks, XCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Code2, Database, Layers3, Lightbulb, ListChecks, XCircle, Workflow, TerminalSquare, Shapes } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
 import { InteractiveQuiz } from '@/features/essentials/InteractiveQuiz';
 import { PracticeWorkspace } from '@/features/practice/PracticeWorkspace';
@@ -44,7 +44,31 @@ export default async function PracticeProblemDetailPage({ params }: { params: Pr
           functionalRequirements={problem.requirements.functional}
           nonFunctionalRequirements={problem.requirements.nonFunctional}
           rubric={problem.rubric}
+          uml={problem.uml}
+          functions={problem.functions}
+          patterns={problem.patterns}
         />
+
+        {problem.category === 'Low-Level Design' && (
+          <section className="grid gap-5 lg:grid-cols-3">
+            <Card eyebrow="UML / object model" title="Relationships to draw" icon={<Workflow className="h-5 w-5" />}>
+              <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl border border-cyan/20 bg-black/20 p-4 font-mono text-xs leading-6 text-cyan-100">{problem.uml}</pre>
+            </Card>
+            <Card eyebrow="Core functions" title="Start with behavior" icon={<Shapes className="h-5 w-5" />}>
+              <BulletList items={problem.functions ?? []} />
+            </Card>
+            <Card eyebrow="Patterns" title="Use with intent" icon={<Lightbulb className="h-5 w-5" />}>
+              <div className="flex flex-wrap gap-2">{(problem.patterns ?? []).map((pattern) => <span key={pattern} className="rounded-full border border-violet-300/20 bg-violet-400/10 px-3 py-1 text-sm text-violet-100">{pattern}</span>)}</div>
+              <p className="mt-4 text-sm leading-6 text-slate-400">Patterns are tools, not requirements. Explain the problem each one solves and the cost it introduces.</p>
+            </Card>
+          </section>
+        )}
+
+        {problem.implementation && (
+          <Card eyebrow="Implementation starter" title="A testable seam" icon={<TerminalSquare className="h-5 w-5" />}>
+            <pre className="overflow-x-auto rounded-2xl border border-white/10 bg-black/30 p-4 font-mono text-xs leading-6 text-slate-200">{problem.implementation}</pre>
+          </Card>
+        )}
 
         <section className="grid gap-5 lg:grid-cols-[0.72fr_0.28fr]">
           <div className="space-y-5">

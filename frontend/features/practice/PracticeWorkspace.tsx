@@ -11,6 +11,9 @@ type PracticeWorkspaceProps = {
   functionalRequirements: string[];
   nonFunctionalRequirements: string[];
   rubric: string[];
+  uml?: string;
+  functions?: string[];
+  patterns?: string[];
 };
 
 type CanvasComponent = {
@@ -34,6 +37,9 @@ export function PracticeWorkspace({
   functionalRequirements,
   nonFunctionalRequirements,
   rubric,
+  uml,
+  functions = [],
+  patterns = [],
 }: PracticeWorkspaceProps) {
   const storageKey = `systemdesign-lab-practice-workspace-${slug}`;
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -58,7 +64,8 @@ export function PracticeWorkspace({
       }
     }
     setHasLoaded(true);
-  }, [storageKey]);
+    if (!raw && uml) loadUmlDiagram();
+  }, [storageKey, uml]);
 
   const componentCoverage = components.length === 0 ? 0 : Math.round((new Set(canvasComponents.map((item) => item.name)).size / components.length) * 100);
   const expectedConnectionCount = Math.max(components.length - 1, 1);
@@ -110,7 +117,19 @@ export function PracticeWorkspace({
     setSelectedSourceId(null);
   }
 
+  function loadUmlDiagram() {
+    const suggestedComponents = components.map((name, index) => ({ id: `${name}-${index}`, name, ...positionForIndex(index) }));
+    const ids = new Map(suggestedComponents.map((item) => [item.name, item.id]));
+    const umlConnections = (uml ?? '').split(';').flatMap((line) => {
+      const names = line.split('->').map((name) => name.trim()).filter((name) => ids.has(name));
+      return names.slice(0, -1).map((name, index) => ({ id: `uml-${name}-${names[index + 1]}`, sourceId: ids.get(name)!, targetId: ids.get(names[index + 1])! }));
+    });
+    setCanvasComponents(suggestedComponents);
+    setConnections(umlConnections);
+  }
+
   function loadSuggested() {
+    if (uml) { loadUmlDiagram(); return; }
     const suggestedComponents = components.map((name, index) => ({ id: `${name}-${index}`, name, ...positionForIndex(index) }));
     setCanvasComponents(suggestedComponents);
     setConnections(suggestedComponents.slice(0, -1).map((component, index) => ({ id: `${component.id}-${suggestedComponents[index + 1].id}`, sourceId: component.id, targetId: suggestedComponents[index + 1].id })));
@@ -155,11 +174,11 @@ export function PracticeWorkspace({
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-cyan">Interactive practice workspace</p>
             <h2 className="mt-1 text-2xl font-black text-white">Build your {title} design</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Use the component bar, place building blocks on the canvas, then run the rubric simulator to see what is missing.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Use the component bar, place building blocks on the canvas, then run the rubric simulator to see what is missing. For LLD problems, load the UML classes and relationships directly onto the canvas.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={loadSuggested} className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-bold text-ink hover:bg-cyan-100">
-              <MousePointerClick className="h-4 w-4" /> Suggested design
+              <MousePointerClick className="h-4 w-4" /> {uml ? 'Load UML diagram' : 'Suggested design'}
             </button>
             <button type="button" onClick={save} className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10">
               <Save className="h-4 w-4" /> Save local
@@ -197,6 +216,7 @@ export function PracticeWorkspace({
         </aside>
 
         <div className="flex min-w-0 flex-col">
+          {uml && <div className="border-b border-cyan/20 bg-cyan/5 p-4"><div className="grid gap-4 lg:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">UML to canvas</p><p className="mt-2 text-sm leading-6 text-slate-300">Click <strong>Load UML diagram</strong> to place the classes and connect relationships. You can then move every class and add your own connections.</p><div className="mt-3 overflow-x-auto rounded-xl bg-black/20 p-3"><div className="flex min-w-max items-center gap-2">{components.map((component, index) => <span key={component} className="flex items-center gap-2">{index > 0 && <span className="text-cyan">→</span>}<span className="rounded-lg border border-cyan/30 bg-cyan/10 px-3 py-2 font-mono text-xs font-bold text-cyan-100">{component}</span></span>)}</div><p className="mt-3 font-mono text-[11px] text-slate-400">{uml}</p></div></div><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Functions to implement</p><ul className="mt-2 space-y-2">{functions.map((fn) => <li key={fn} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 font-mono text-xs text-violet-100">{fn}</li>)}</ul><p className="mt-3 text-xs text-slate-400">Patterns: {patterns.join(' · ')}</p></div></div></div>}
           <div className="border-b border-white/10 bg-panel/80 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-cyan">Component bar</p>

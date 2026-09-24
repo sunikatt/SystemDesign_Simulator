@@ -23,6 +23,12 @@ export type PracticeProblem = {
   correctSolution: string[];
   rubric: string[];
   quiz: QuizQuestion[];
+  category?: 'System Design' | 'Low-Level Design';
+  focus?: string[];
+  uml?: string;
+  functions?: string[];
+  implementation?: string;
+  patterns?: string[];
 };
 
 export const difficulties: PracticeDifficulty[] = ['Beginner', 'Core', 'Intermediate', 'Advanced'];
@@ -67,6 +73,12 @@ function quizFor(title: string, correct: string): QuizQuestion[] {
     },
   ];
 }
+
+const lldProblem = (input: Omit<PracticeProblem, 'quiz' | 'category'>): PracticeProblem => ({
+  ...input,
+  category: 'Low-Level Design',
+  quiz: quizFor(input.title, input.patterns?.[0] ?? 'Model responsibilities behind interfaces'),
+});
 
 export const practiceProblems: PracticeProblem[] = [
   {
@@ -386,6 +398,48 @@ export const practiceProblems: PracticeProblem[] = [
     quiz: quizFor('File Storage Service', 'Use object storage for bytes and DB for metadata'),
   },
 ];
+
+
+const lldProblems: PracticeProblem[] = [
+  ['parking-lot', 'Parking Lot System', 'Core', 'slots, vehicle types, ticketing, payment', 'Strategy, Factory', 'ParkingLot -> Floor -> ParkingSlot; Vehicle -> Ticket -> Payment'],
+  ['library-management', 'Library Management System', 'Beginner', 'books, members, borrowing, fines', 'Strategy, Factory', 'Library -> Catalog; Member -> Loan -> BookCopy; Loan -> Fine'],
+  ['elevator-system', 'Elevator System', 'Intermediate', 'floors, direction logic, request scheduling', 'Strategy, State', 'ElevatorController -> Elevator; Request -> Scheduler'],
+  ['hotel-booking', 'Hotel Booking System', 'Core', 'rooms, reservations, availability, pricing', 'Strategy, Repository', 'Hotel -> Room; Guest -> Reservation -> Room; Reservation -> Payment'],
+  ['vending-machine', 'Vending Machine', 'Beginner', 'state machine, inventory, payments', 'State, Strategy', 'VendingMachine o-> State; Inventory -> Product; PaymentGateway'],
+  ['chess-game', 'Chess Game', 'Intermediate', 'pieces, moves, board, turn logic', 'Command, Strategy', 'Game -> Board -> Piece; Player -> Move; Move -> Piece'],
+  ['snake-and-ladder', 'Snake and Ladder Game', 'Beginner', 'board, dice, players, win condition', 'Strategy, Factory', 'Game -> Board -> Cell; Game -> Dice; Player -> Position'],
+  ['movie-ticket-booking', 'Movie Ticket Booking System', 'Intermediate', 'theaters, seats, shows, concurrency', 'Strategy, Observer', 'Movie -> Theater -> Screen -> Show -> Seat; Booking -> Payment'],
+  ['atm-machine', 'ATM Machine', 'Core', 'authentication, cash dispensing, transaction states', 'State, Chain of Responsibility', 'ATM -> ATMState; Card -> Account; CashDispenser -> CashSlot'],
+  ['ride-sharing', 'Ride-Sharing App', 'Advanced', 'driver-rider matching, trip lifecycle, pricing', 'Strategy, State, Observer', 'Rider -> Trip <- Driver; Trip -> PricingStrategy; Trip -> Observer'],
+  ['food-delivery', 'Food Delivery System', 'Core', 'orders, restaurant menus, delivery agents', 'State, Strategy, Observer', 'Customer -> Order -> Restaurant; Order -> DeliveryAgent; Order -> Payment'],
+  ['logger-framework', 'Logger / Logging Framework', 'Core', 'log levels, sinks, singleton pattern', 'Chain of Responsibility, Singleton, Factory', 'Logger -> LogHandler -> Sink; Logger -> Formatter'],
+  ['rate-limiter-lld', 'Rate Limiter', 'Intermediate', 'token bucket, sliding window, concurrency', 'Strategy, Factory', 'RateLimiter -> RateLimitStrategy; Bucket -> Clock; Request -> Decision'],
+  ['cache-lru-lfu', 'Cache (LRU / LFU)', 'Intermediate', 'eviction policy, HashMap + DLL, thread safety', 'Strategy, Decorator', 'Cache -> EvictionPolicy; HashMap + DoublyLinkedList; CacheEntry'],
+  ['notification-system', 'Notification System', 'Core', 'SMS/email/push channels, delivery, preferences', 'Observer, Factory, Strategy', 'NotificationService -> Channel; User -> Preference; Event -> Subscriber'],
+  ['shopping-cart', 'Online Shopping Cart', 'Core', 'cart, inventory, checkout, discounts', 'Strategy, Factory, Facade', 'Customer -> Cart -> CartItem; CheckoutFacade -> Payment/Inventory'],
+  ['traffic-control', 'Traffic Control System', 'Advanced', 'signals, timers, state transitions', 'State, Observer, Strategy', 'Intersection -> Signal -> SignalState; Timer -> Controller'],
+  ['cricinfo-live-score', 'CricInfo / Live Score App', 'Intermediate', 'match, innings, ball-by-ball updates, observers', 'Observer, State, Command', 'Match -> Innings -> Over -> Ball; Scoreboard observes Match'],
+  ['social-media-feed', 'Social Media Platform / Feed', 'Advanced', 'posts, followers, feed generation, likes/comments', 'Observer, Strategy, Factory', 'User -> FollowGraph; User -> Post; Feed -> RankingStrategy'],
+  ['splitwise', 'Splitwise App', 'Core', 'groups, expenses, settlements, balance tracking', 'Strategy, Command, Observer', 'Group -> Expense -> Split; User -> Balance; SettlementService'],
+].map(([slug, title, difficulty, focus, patterns, uml]) => lldProblem({
+  slug, title, difficulty: difficulty as PracticeDifficulty, status: 'Guided notes',
+  description: `Model a maintainable ${title} with clear objects, interfaces, lifecycle rules, and testable business logic. Focus on ${focus}.`,
+  topics: ['UML', 'Object modelling', 'Interfaces', 'Testable implementation'],
+  components: Array.from(uml.matchAll(/[A-Z][A-Za-z]+/g)).map((match) => match[0]).filter((name, index, all) => all.indexOf(name) === index),
+  learningOutcomes: ['Identify responsibilities and collaborations', 'Apply SOLID without over-engineering', 'Implement the core use cases with patterns'],
+  requirements: { functional: [`Support the core ${focus} use cases`, 'Validate invalid actions and domain rules', 'Keep state transitions explicit'], nonFunctional: ['Extensible for new policies', 'Thread-safe where shared state exists', 'Unit-testable without infrastructure'] },
+  apis: ['create/use domain object with validated input', 'execute primary use case and return result', 'query current state / history'],
+  dbSchema: ['In-memory domain objects for the interview implementation', 'Repository interface for persistence boundary', 'Unique IDs and timestamps for important entities'],
+  architecture: [`Objects: ${uml}`, `Patterns: ${patterns}`],
+  commonMistakes: ['One God class owns every rule', 'Concrete dependencies inside business logic', 'No validation around state transitions or concurrent updates'],
+  correctSolution: ['Start with entities, value objects, and interfaces', 'Keep policies behind Strategy and lifecycle behind State where useful', 'Use dependency injection and focused unit tests'],
+  rubric: ['Clear class responsibilities', 'Useful UML relationships', 'Explains chosen pattern and trade-off', 'Provides core functions and implementation direction', 'Handles invalid state and concurrency risks'],
+  focus: focus.split(', '), uml, functions: ['createRequest(input): Result', 'findAvailable(criteria): Entity[]', 'execute(command): Result', 'validateTransition(from, to): boolean'],
+  implementation: `interface Repository<T> { findById(id: string): T | undefined; save(value: T): void }\nclass Service { constructor(private repo: Repository<Entity>, private policy: Policy) {}\n  execute(command: Command): Result { /* validate, apply policy, persist, publish event */ }\n}`,
+  patterns: patterns.split(', '),
+}));
+
+practiceProblems.push(...lldProblems);
 
 export function getPracticeProblem(slug: string) {
   return practiceProblems.find((problem) => problem.slug === slug);

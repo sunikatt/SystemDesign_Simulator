@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Bot, ClipboardList, LineChart, Network, PlayCircle } from 'lucide-react';
+import { ArrowRight, Bot, ClipboardList, LineChart, Network, PlayCircle, Boxes } from 'lucide-react';
 import { AuthControls } from '@/features/auth/AuthControls';
 
 const steps = [
@@ -32,6 +32,13 @@ const learningPaths = [
     description: 'Distributed systems depth: sharding, replication, consistency, stream processing, multi-region routing, disaster recovery, hot partitions, and SRE-style reliability.',
     topics: ['Distributed cache', 'Video processing', 'Search system', 'Multi-region systems'],
     href: '/system-design-advanced',
+  },
+  {
+    title: 'Low-Level Design',
+    status: 'Live now',
+    description: 'Learn SOLID principles, UML, object modelling, design patterns, and clean implementations through real-world object-oriented problems.',
+    topics: ['SOLID principles', 'Design patterns', 'UML diagrams', 'Implementations'],
+    href: '/low-level-design',
   },
   {
     title: 'Practice Problems',
@@ -75,8 +82,8 @@ export default function HomePage() {
             <Link href="/system-design-essentials" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 font-semibold text-ink hover:bg-cyan-100">
               Start Essentials <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/practice-problems" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/10">
-              Open Practice Problems
+            <Link href="/low-level-design" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 px-6 py-3 font-semibold text-white hover:bg-white/10">
+              Explore Low-Level Design
             </Link>
           </div>
         </div>
@@ -109,7 +116,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl pb-16">
         <div className="mb-8 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan">Learning paths</p>
-          <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">Four clear sections from basics to hands-on practice.</h2>
+          <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">Learn the system, then design the objects inside it.</h2>
           <p className="mt-4 text-slate-300">
             Keep learning paths clean: concepts stay in Essentials, end-to-end examples stay in Real World Examples, deep distributed systems stay in Advanced, and live simulators stay in Practice Problems.
           </p>
@@ -129,7 +136,7 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan group-hover:text-cyan-100">
-                {path.title === 'Practice Problems' ? <ClipboardList className="h-4 w-4" /> : null}
+                {path.title === 'Practice Problems' ? <ClipboardList className="h-4 w-4" /> : path.title === 'Low-Level Design' ? <Boxes className="h-4 w-4" /> : null}
                 Open section <ArrowRight className="h-4 w-4" />
               </div>
             </Link>

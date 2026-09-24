@@ -9,11 +9,14 @@ The product is organized into four sections:
 1. **System Design Essentials** - fundamentals like functional/non-functional requirements, frontend/backend APIs, API Gateway, load balancing, caching strategies, databases, replication, sharding, queues, rate limiting, consistency, observability, capacity estimation, latency, bottlenecks, and trade-offs.
 2. **System Design with Real World Examples** - guided end-to-end product designs such as rate limiters, notification systems, file upload services, and news feeds.
 3. **System Design Advanced** - distributed-system topics like sharding, replication, consistency, streams, multi-region routing, hot partitions, and disaster recovery.
-4. **Practice Problems** - hands-on labs and simulators. Product-specific challenges such as the URL Shortener live here.
+4. **Low-Level Design** - SOLID principles, UML/object modelling, design patterns with real-world examples, implementation starters, and 20 guided LLD problems.
+5. **Practice Problems** - hands-on labs and simulators. Product-specific challenges such as the URL Shortener live here. LLD problems use the same canvas workspace and add UML, functions, implementations, pattern choices, and rubrics.
 
 ## MVP
 
 The `/system-design-essentials` track contains module pages where each module includes concept explanation, simple diagram, live mini example, production example, interview question, and practice challenge.
+
+The `/low-level-design` track teaches all five SOLID principles and ten common design patterns (Factory, Builder, Adapter, Decorator, Facade, Strategy, Observer, State, Chain of Responsibility, and Singleton). It includes 20 problems: Parking Lot, Library, Elevator, Hotel Booking, Vending Machine, Chess, Snake and Ladder, Movie Ticket Booking, ATM, Ride Sharing, Food Delivery, Logger, Rate Limiter, LRU/LFU Cache, Notification System, Shopping Cart, Traffic Control, CricInfo, Social Media Feed, and Splitwise.
 
 The first live practice problem is a production-style URL Shortener architecture simulator. Users can read requirements, build a frontend-to-backend architecture, configure components, run a mathematical traffic simulation, discover bottlenecks, and receive educational feedback.
 

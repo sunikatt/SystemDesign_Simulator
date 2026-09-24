@@ -19,6 +19,9 @@ export default function PracticeProblemsPage() {
           </div>
           <div className="flex items-center gap-3">
             <AuthControls />
+            <Link href="/low-level-design" className="inline-flex items-center gap-2 rounded-2xl border border-violet-300/20 px-3 py-2 text-sm text-violet-100 hover:bg-violet-400/10">
+              LLD module
+            </Link>
             <Link href="/" className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-3 py-2 text-sm text-slate-200 hover:bg-white/10">
               <ArrowLeft className="h-4 w-4" /> Home
             </Link>
