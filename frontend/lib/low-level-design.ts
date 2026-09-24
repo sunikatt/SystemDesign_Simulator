@@ -57,6 +57,19 @@ export const patternExamples: Record<string, string[]> = {
   'Chain of Responsibility': ['Logger handlers route messages by level.', 'ATM cash dispenser handlers process denominations.'],
 };
 
+export const patternScenarios: Record<string, { title: string; problem: string; components: string[]; flow: string }> = {
+  'Factory Method': { title: 'Notification channels', problem: 'The product should send Email, SMS, or Push without changing checkout code.', components: ['Checkout', 'NotificationFactory', 'EmailSender / SmsSender', 'Provider'], flow: 'Checkout → Factory → Sender → Provider' },
+  Builder: { title: 'Flexible HTTP requests', problem: 'Requests have optional headers, query parameters, retries, and timeouts.', components: ['Caller', 'RequestBuilder', 'HttpRequest', 'HttpClient'], flow: 'Caller → Builder → Request → Client' },
+  Singleton: { title: 'Application metrics registry', problem: 'All modules should publish to one coordinated registry, not many disconnected instances.', components: ['Service A', 'Service B', 'MetricsRegistry', 'MetricsSink'], flow: 'Services → One Registry → Sink' },
+  Adapter: { title: 'Multiple payment providers', problem: 'Stripe and Razorpay have different SDK methods but checkout needs one contract.', components: ['Checkout', 'PaymentGateway', 'StripeAdapter', 'RazorpayAdapter'], flow: 'Checkout → Gateway → Adapter → SDK' },
+  Decorator: { title: 'Repository capabilities', problem: 'Add caching, metrics, and retry behavior without creating many repository subclasses.', components: ['Service', 'MetricsDecorator', 'CacheDecorator', 'DatabaseRepository'], flow: 'Service → Metrics → Cache → Database' },
+  Facade: { title: 'One-click checkout', problem: 'The caller should not coordinate inventory, payment, order, and confirmation services.', components: ['Client', 'CheckoutFacade', 'Inventory', 'Payment', 'Order'], flow: 'Client → Facade → Inventory + Payment + Order' },
+  Strategy: { title: 'Parking slot allocation', problem: 'Nearest-slot, best-fit, and electric-slot policies change by parking location.', components: ['ParkingLot', 'AllocationStrategy', 'NearestStrategy', 'BestFitStrategy'], flow: 'ParkingLot → Strategy → SlotRepository' },
+  Observer: { title: 'Live cricket score', problem: 'Scoreboards, commentary, and notifications react whenever a ball is recorded.', components: ['Match', 'Scoreboard', 'Commentary', 'PushSubscriber'], flow: 'Match → Subscribers' },
+  State: { title: 'Vending machine lifecycle', problem: 'The same button behaves differently when idle, paid, empty, or dispensing.', components: ['VendingMachine', 'IdleState', 'HasMoneyState', 'DispensingState'], flow: 'Machine → CurrentState → Transition' },
+  'Chain of Responsibility': { title: 'Logger levels', problem: 'A log record should travel through handlers and reach the correct sinks.', components: ['Logger', 'DebugHandler', 'ErrorHandler', 'FileSink'], flow: 'Logger → Handlers → Sink' },
+};
+
 export const lldTopics = [
 
   { title: 'SOLID principles', description: 'Five design principles with practical examples, trade-offs, and interview signals.' },
